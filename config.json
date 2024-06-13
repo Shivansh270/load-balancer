@@ -1,0 +1,9 @@
+{
+  "serverCount": "2",
+  "servers": [
+    "http://localhost:3001",
+    "htpp://localhost:3002"
+  ],
+  "healthCheckEndpoint": "/health",
+  "healthCheckPeriod": 2
+}
