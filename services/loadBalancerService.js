@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import axios from 'axios';  // Ensure axios is imported here
+import axios from "axios"; // Ensure axios is imported here
 
 let healthyServers = [];
 
@@ -13,7 +13,7 @@ export const updateServerHealth = (server, isHealthy) => {
   }
 };
 
-export const getNextServer = () => {
+export const getNextServer = (req) => {
   if (healthyServers.length === 0) {
     console.log(chalk.red("No healthy servers available"));
     return null;

@@ -1,6 +1,5 @@
 import { addToQueue, processQueue } from "../services/queueService.js";
 
-
 export const handleRequest = async (req, res, config) => {
   try {
     console.log("Handling request");

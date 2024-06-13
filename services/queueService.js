@@ -1,4 +1,4 @@
-import { getNextServer, makeRequestToServer } from "./loadBalancerService.js";
+import { getNextServer, makeRequestToServer } from "./loadBalancerService.js"; // Ensure the correct import path
 
 let requestQueue = [];
 
@@ -10,14 +10,16 @@ export const processQueue = async (config) => {
   if (requestQueue.length === 0) return;
 
   const { req, res } = requestQueue.shift();
-  const server = getNextServer();
+
+  // Get server based on dynamic routing
+  const server = getNextServer(req);
 
   if (!server) {
     res.status(500).json({
       success: false,
-      error: "All Servers are dead !!!",
+      error: "No healthy servers available",
       message:
-        "If you are a developer, ensure that you have provided the correct URLs in the load balancer configuration.",
+        "Ensure that you have provided the correct URLs in the load balancer configuration.",
     });
     return;
   }
