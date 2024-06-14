@@ -1,5 +1,6 @@
+// loadBalancerService.js
 import chalk from "chalk";
-import axios from "axios"; // Ensure axios is imported here
+import axios from "axios";
 
 let healthyServers = [];
 
@@ -18,10 +19,26 @@ export const getNextServer = (req) => {
     console.log(chalk.red("No healthy servers available"));
     return null;
   }
-  const server =
-    healthyServers[Math.floor(Math.random() * healthyServers.length)];
+
+  const { method, originalUrl } = req;
+  let server;
+  if (method === "GET" && originalUrl.includes("/api/rest")) {
+    // Route GET requests with /api/rest to a random server
+    server = getRandomServer();
+  } else if (method === "POST" && req.body && req.body.payloadSize > 1000) {
+    // Route POST requests with payload size > 1000 to a random server
+    server = getRandomServer();
+  } else {
+    // Default to random server for other requests
+    server = getRandomServer();
+  }
+
   console.log(chalk.blue(`Selected server: ${server}`));
   return server;
+};
+
+const getRandomServer = () => {
+  return healthyServers[Math.floor(Math.random() * healthyServers.length)];
 };
 
 export const makeRequestToServer = async (req, res, server) => {
@@ -29,6 +46,8 @@ export const makeRequestToServer = async (req, res, server) => {
     const { data } = await axios({
       method: req.method,
       url: `${server}${req.originalUrl}`,
+      data: req.body,
+      headers: req.headers,
     });
     res.status(200).json({
       success: true,

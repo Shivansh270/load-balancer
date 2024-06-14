@@ -9,8 +9,9 @@ export const handleRequest = async (req, res, config) => {
       }\nUser-Agent: ${req.get("User-Agent")}`
     );
 
-    addToQueue(req, res);
-    processQueue(config);
+    const strategy = req.headers["x-queue-strategy"] || "fifo"; // Set queue strategy from request header or default to FIFO
+    addToQueue(req, res, strategy);
+    processQueue(config, strategy);
   } catch (error) {
     res.status(500).json({
       success: false,
